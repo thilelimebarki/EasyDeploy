@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+	<style>
+		body {
+			background-image: url('/images/bg-circuit.jpg');
+			background-size: cover;
+			background-repeat: no-repeat;
+			font-family: Arial, sans-serif;
+		}
+
+		.app-container {
+			background-color: rgba(255, 255, 255, 0.95);
+			max-width: 1000px;
+			margin: 60px auto;
+			padding: 30px;
+			border-radius: 20px;
+		}
+
+		h1 {
+			text-align: center;
+			font-size: 40px;
+			font-style: italic;
+			margin-bottom: 10px;
+		}
+
+		p {
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		th,
+		td {
+			padding: 15px;
+			text-align: center;
+		}
+
+		th {
+			border-bottom: 2px solid #ccc;
+		}
+
+		td {
+			border-bottom: 1px solid #eee;
+		}
+
+		.btn {
+			padding: 8px 12px;
+			border: none;
+			border-radius: 5px;
+			text-decoration: none;
+			color: white;
+			cursor: pointer;
+			margin: 5px;
+			display: inline-block;
+		}
+
+		.btn-install {
+			background-color: #2196F3;
+		}
+
+		.btn-download {
+			background-color: #9E9E9E;
+		}
+
+		.btn-success, 
+		.btn-warning,
+		.btn-danger {
+			color: #000000;
+			border-bottom: 2px solid #ccc;
+			font-weight: bold;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="app-container">
+		<h1>
+			Applications disponibles
+		</h1>
+		<p>
+			Choisissez une application à installer. Vous pouvez lancer le script automatiquement ou bien le télécharger afin de l’exécuter manuellement.
+		</p>
+
+		<table>
+			<thead>
+				<tr>
+					<th>
+						Applications
+					</th>
+					<th>
+						Descriptions
+					</th>
+					<th>
+						Actions
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for application in applications %}
+					<tr>
+						<td>
+							{{ application.nomApplication }}
+						</td>
+						<td>
+							{{ application.description }}
+						</td>
+						<td>
+							{% if application.scriptPath %}
+								<a href="{{ path('app_application_install', { id: application.id }) }}" class="btn btn-install">
+									Installer
+								</a>
+								<a href="{{ path('app_script_download', { filename: application.scriptPath }) }}" class="btn btn-download" download>
+									Télécharger le script
+								</a>
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<a href="{{ path('app_application_new') }}" class="btn btn-success">➕ Ajouter une application</a>
+		<a href="{{ path('app_application_select_edit', { id: 1 }) }}" class="btn btn-warning">✏️ Modifier une application</a>
+		<a href="{{ path('app_application_select_delete') }}" class="btn btn-danger">🗑️ Supprimer une application</a>
+
+
+	</div>
+
+	<script>
+		function copyCommand(command) {
+navigator.clipboard.writeText(command).then(() => {
+alert("✅ Commande copiée !\n\nCollez-la dans PowerShell pour lancer l’installation.");
+}).catch(err => {
+alert("❌ Erreur de copie : " + err);
+});
+}
+	</script>
+{% endblock %}

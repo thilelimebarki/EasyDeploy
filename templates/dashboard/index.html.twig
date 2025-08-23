@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div style="background:#f2f2f2; padding:20px; border-radius:10px; max-width:900px; margin:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2>Bienvenue {{ technicien.prenom }} {{ technicien.nom }}</h2>
+        <a href="{{ path('app_logout') }}" style="padding: 5px 10px; background:#ddd; border-radius:5px;">Déconnexion</a>
+    </div>
+
+    <div style="display:flex; justify-content:space-around; margin-top:30px;">
+        <div style="text-align:center;">
+            <img src="{{ asset('images/application.png') }}" alt="Applications" style="height: 60px;">
+            <h4>Applications disponibles</h4>
+            <a href="{{ path('app_application_index') }}">Afficher la liste</a>
+        </div>
+        <div style="text-align:center;">
+            <img src="{{ asset('images/documentation.png') }}" alt="Documentation" style="height: 60px;">
+            <h4>Documentations techniques</h4>
+            <a href="#">Accéder aux procédures</a>
+        </div>
+        <div style="text-align:center;">
+            <img src="{{ asset('images/historique.png') }}" alt="historique" style="height: 60px;">
+            <h4>Historique des installations</h4>
+            <a href="#">Afficher l'historique</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

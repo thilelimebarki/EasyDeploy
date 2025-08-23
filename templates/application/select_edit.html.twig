@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+	<style>
+		body {
+			background-image: url('/images/bg-circuit.jpg');
+			background-size: cover;
+			background-repeat: no-repeat;
+			font-family: Arial, sans-serif;
+		}
+
+		.app-container {
+			background-color: rgba(255, 255, 255, 0.95);
+			max-width: 1000px;
+			margin: 60px auto;
+			padding: 30px;
+			border-radius: 20px;
+		}
+
+		h1 {
+			text-align: center;
+			font-size: 40px;
+			font-style: italic;
+			margin-bottom: 10px;
+		}
+
+		p {
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		th,
+		td {
+			padding: 15px;
+			text-align: center;
+		}
+
+		th {
+			border-bottom: 2px solid #ccc;
+		}
+
+		td {
+			border-bottom: 1px solid #eee;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="app-container">
+		<h1>
+			Modifier une application
+		</h1>
+		<p>
+			Sélectionnez une application pour la modifier.
+		</p>
+
+		<table>
+			<thead>
+				<tr>
+					<th>
+						Applications
+					</th>
+					<th>
+						Descriptions
+					</th>
+					<th>
+						Action
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for application in applications %}
+					<tr>
+						<td>
+							{{ application.nomApplication }}
+						</td>
+						<td>
+							{{ application.description }}
+						</td>
+						<td>
+							<a href="{{ path('app_application_edit', { id: application.id }) }}" class="btn btn-warning">
+								Modifier
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<a href="{{ path('app_application_index') }}" class="btn btn-secondary">
+			↩ Retour
+		</a>
+	</div>
+{% endblock %}

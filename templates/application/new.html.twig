@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	New Application
+{% endblock %}
+
+{% block body %}
+	<h1>
+		Create new Application
+	</h1>
+
+	{{ include('application/_form.html.twig') }}
+
+	<a href="{{ path('app_application_index') }}" class="btn btn-secondary">
+		↩ Retour
+	</a>
+{% endblock %}
