@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+	<style>
+		body {
+			background-image: url('/images/bg-circuit.jpg');
+			background-size: cover;
+			background-repeat: no-repeat;
+			font-family: Arial, sans-serif;
+		}
+
+		.app-container {
+			background-color: rgba(255, 255, 255, 0.95);
+			max-width: 1000px;
+			margin: 60px auto;
+			padding: 30px;
+			border-radius: 20px;
+		}
+
+		h1 {
+			text-align: center;
+			font-size: 40px;
+			font-style: italic;
+			margin-bottom: 10px;
+		}
+
+		p {
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		th,
+		td {
+			padding: 15px;
+			text-align: center;
+		}
+
+		th {
+			border-bottom: 2px solid #ccc;
+		}
+
+		td {
+			border-bottom: 1px solid #eee;
+		}
+
+		.btn {
+			padding: 8px 12px;
+			border: none;
+			border-radius: 5px;
+			text-decoration: none;
+			color: white;
+			cursor: pointer;
+			margin: 5px;
+			display: inline-block;
+		}
+
+		.btn-install {
+			background-color: #2196F3;
+		}
+
+		.btn-download {
+			background-color: #9E9E9E;
+		}
+
+		.btn-success,
+		.btn-warning,
+		.btn-danger {
+			color: #000000;
+			border-bottom: 2px solid #ccc;
+			font-weight: bold;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="app-container">
+		<h1>
+			Documentation technique
+		</h1>
+		<p>
+			Choisissez une application à installer. Vous pouvez lancer le script automatiquement ou bien le télécharger afin de l’exécuter manuellement.
+		</p>
+
+		<table>
+			<thead>
+				<tr>
+					<th>
+						Procédure
+					</th>
+					<th>
+						Descriptions
+					</th>
+					<th>
+						Actions
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for procedure in procedures %}
+					<tr>
+						<td>
+							{{ procedure.nom }}
+						</td>
+						<td>
+							{{ procedure.description }}
+						</td>
+						<td>
+							{%  if procedure.document %}
+								<a href="{{ path('app_procedure_download', { filename: procedure.document }) }}" class="btn btn-download" download>
+									📂 Télécharger
+								</a>
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+
+			</tbody>
+		</table>
+		<a href="{{ path('app_procedure_new') }}" class="btn btn-success">
+			➕ Ajouter une procédure
+		</a>
+		<a href="{{ path('app_procedure_select_edit') }}" class="btn btn-warning">
+			✏️ Modifier une procédure
+		</a>
+		<a href="{{ path('app_procedure_select_delete') }}" class="btn btn-danger">
+			🗑️ Supprimer une procédure
+		</a>
+
+
+	</div>
+{% endblock %}

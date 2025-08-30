@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Ajouter une procédure</h1>
+
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.document) }}
+    <button class="btn btn-success">💾 Enregistrer</button>
+{{ form_end(form) }}
+{% endblock %}
