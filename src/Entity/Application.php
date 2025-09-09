@@ -5,7 +5,7 @@ namespace App\Entity;
 use App\Repository\ApplicationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ApplicationRepository::class)]
+#[ORM\Entity]
 class Application
 {
     #[ORM\Id]
@@ -14,16 +14,17 @@ class Application
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nomApplication = null;
+    private ?string $nom_application = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
+    #[ORM\Column(type: "text", nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $scriptPath = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $scriptCommand = null;
+
+
+    // GETTERS & SETTERS
 
     public function getId(): ?int
     {
@@ -32,12 +33,12 @@ class Application
 
     public function getNomApplication(): ?string
     {
-        return $this->nomApplication;
+        return $this->nom_application;
     }
 
-    public function setNomApplication(string $nomApplication): self
+    public function setNomApplication(string $nom_application): self
     {
-        $this->nomApplication = $nomApplication;
+        $this->nom_application = $nom_application;
         return $this;
     }
 
@@ -51,7 +52,6 @@ class Application
         $this->description = $description;
         return $this;
     }
-
     public function getScriptPath(): ?string
     {
         return $this->scriptPath;
@@ -63,28 +63,4 @@ class Application
         return $this;
     }
 
-    public function getScriptCommand(): ?string
-    {
-        return $this->scriptCommand;
-    }
-
-    public function setScriptCommand(?string $scriptCommand): self
-    {
-        $this->scriptCommand = $scriptCommand;
-        return $this;
-    }
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-private ?string $commandeExecution = null;
-
-public function getCommandeExecution(): ?string
-{
-    return $this->commandeExecution;
-}
-
-public function setCommandeExecution(?string $commandeExecution): self
-{
-    $this->commandeExecution = $commandeExecution;
-    return $this;
-}
 }

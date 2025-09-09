@@ -67,7 +67,7 @@
 			background-color: #9E9E9E;
 		}
 
-		.btn-success, 
+		.btn-success,
 		.btn-warning,
 		.btn-danger {
 			color: #000000;
@@ -110,22 +110,37 @@
 							{{ application.description }}
 						</td>
 						<td>
+
 							{% if application.scriptPath %}
+								<!-- Bouton Télécharger -->
+								<a href="{{ path('app_script_download', { filename: application.scriptPath }) }}" class="btn btn-download">
+									Télécharger le script
+								</a>
+
+								<!-- Bouton Installer -->
 								<a href="{{ path('app_application_install', { id: application.id }) }}" class="btn btn-install">
 									Installer
 								</a>
-								<a href="{{ path('app_script_download', { filename: application.scriptPath }) }}" class="btn btn-download" download>
-									Télécharger le script
-								</a>
+							{% else %}
+								<span>
+									Aucun script disponible
+								</span>
 							{% endif %}
+
 						</td>
 					</tr>
 				{% endfor %}
 			</tbody>
 		</table>
-		<a href="{{ path('app_application_new') }}" class="btn btn-success">➕ Ajouter une application</a>
-		<a href="{{ path('app_application_select_edit', { id: 1 }) }}" class="btn btn-warning">✏️ Modifier une application</a>
-		<a href="{{ path('app_application_select_delete') }}" class="btn btn-danger">🗑️ Supprimer une application</a>
+		<a href="{{ path('app_application_new') }}" class="btn btn-success">
+			➕ Ajouter une application
+		</a>
+		<a href="{{ path('app_application_select_edit', { id: 1 }) }}" class="btn btn-warning">
+			✏️ Modifier une application
+		</a>
+		<a href="{{ path('app_application_select_delete') }}" class="btn btn-danger">
+			🗑️ Supprimer une application
+		</a>
 
 
 	</div>

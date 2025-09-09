@@ -1,13 +1,14 @@
 <?php
-// src/Form/ApplicationType.php
 namespace App\Form;
 
 use App\Entity\Application;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class ApplicationType extends AbstractType
 {
@@ -15,18 +16,30 @@ class ApplicationType extends AbstractType
     {
         $builder
             ->add('nomApplication', TextType::class, [
-                'label' => 'Nom de l\'application',
+                'label' => 'Nom de l\'application'
             ])
-            ->add('description', TextType::class, [
+            ->add('description', TextareaType::class, [
                 'label' => 'Description',
-            ])
-            ->add('scriptPath', TextType::class, [
-                'label' => 'Nom du script (.ps1)',
-            ])
-            ->add('commandeExecution', TextType::class, [
-                'label' => 'Commande à exécuter',
                 'required' => false,
+            ])
+
+            ->add('scriptFile', FileType::class, [
+                'label' => 'Script PowerShell (.ps1)',
+                'mapped' => false,   // important ! On ne mappe pas directement à l’entité
+                'required' => true,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'text/plain',
+                            'application/octet-stream',
+                            'application/x-powershell',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez uploader un fichier PowerShell valide (.ps1)',
+                    ])
+                ],
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

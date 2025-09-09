@@ -11,6 +11,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 
 class ApplicationController extends AbstractController
 {
@@ -24,43 +29,10 @@ class ApplicationController extends AbstractController
         ]);
     }
 
-        #[Route('/new', name: 'app_application_new')]
-    public function new(Request $request, EntityManagerInterface $em): Response
-    {
-        $app = new Application();
-        $form = $this->createForm(ApplicationType::class, $app);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($app);
-            $em->flush();
-            return $this->redirectToRoute('app_application_index');
-        }
-
-        return $this->render('application/new.html.twig', [
-            'form' => $form->createView()
-        ]);
-    }
 
 
-    #[Route('/applications/install/{id}', name: 'app_application_install')]
-public function install(Application $application): Response
-{
-    // Contenu du fichier .bat généré à la volée
-    $batContent = "@echo off\r\n";
-    $batContent .= "PowerShell -ExecutionPolicy Bypass -File \"%~dp0" . $application->getScriptPath() . "\"\r\n";
-    $batContent .= "pause\r\n";
 
-    // Nom du fichier
-    $fileName = 'install_' . strtolower(str_replace(' ', '_', $application->getNomApplication())) . '.bat';
 
-    // Crée le fichier temporaire
-    $tempFile = tempnam(sys_get_temp_dir(), 'bat');
-    file_put_contents($tempFile, $batContent);
-
-    // Envoi du fichier au navigateur
-    return $this->file($tempFile, $fileName, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
-}
 
 #[Route('/scripts/{filename}', name: 'app_script_download')]
 public function downloadScript(string $filename): Response
@@ -86,23 +58,48 @@ public function selectEdit(EntityManagerInterface $em): Response
 }
 
 // Route pour modifier une application précise
+
+
 #[Route('/applications/{id}/edit', name: 'app_application_edit')]
-public function edit(Request $request, Application $application, EntityManagerInterface $em): Response
+public function edit(Request $request, Application $application, EntityManagerInterface $em, SluggerInterface $slugger): Response
 {
     $form = $this->createForm(ApplicationType::class, $application);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
+
+        /** @var UploadedFile $scriptFile */
+        $scriptFile = $form->get('scriptFile')->getData();
+
+        if ($scriptFile) {
+            $originalFilename = pathinfo($scriptFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename.'-'.uniqid().'.ps1';
+
+            try {
+                $scriptFile->move(
+                    $this->getParameter('scripts_directory'), // défini dans services.yaml
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Erreur lors de l’upload du script');
+            }
+
+            // Mise à jour du chemin dans l’entité
+            $application->setScriptPath($newFilename);
+        }
+
         $em->flush();
+
+        $this->addFlash('success', 'Application mise à jour avec succès !');
         return $this->redirectToRoute('app_application_select_edit'); // retour à la liste
     }
 
     return $this->render('application/edit.html.twig', [
         'form' => $form->createView(),
-        'application' => $application
+        'application' => $application,
     ]);
 }
-
 
 #[Route('/applications/select-delete', name: 'app_application_select_delete')]
 public function selectDelete(EntityManagerInterface $em): Response
@@ -125,5 +122,92 @@ public function delete(Request $request, Application $application, EntityManager
     return $this->redirectToRoute('app_application_index');
 }
 
+
+
+
+
+
+
+
+#[Route('/script/{filename}', name: 'app_script_download')]
+public function download(string $filename): BinaryFileResponse
+{
+    $filePath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $filename;
+
+    if (!file_exists($filePath)) {
+        throw $this->createNotFoundException('Le fichier demandé est introuvable.');
+    }
+
+    $response = $this->file($filePath, $filename, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+    
+    // Définir le Content-Type pour PowerShell
+    $response->headers->set('Content-Type', 'application/octet-stream');
+
+    return $response;
+}
+
+
+#[Route('/new', name: 'app_application_new')]
+public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+{
+    $application = new Application();
+    $form = $this->createForm(ApplicationType::class, $application);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        // Gérer l'upload du fichier de script
+        $file = $form->get('scriptFile')->getData();
+        if ($file) {
+            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            
+            $originalExtension = $file->getClientOriginalExtension(); // récupère l’extension réelle
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$originalExtension;
+
+            // Déplacer le fichier dans le dossier public/uploads
+            $file->move(
+                $this->getParameter('kernel.project_dir') . '/public/uploads',
+                $newFilename
+            );
+
+            // Enregistrer le chemin du fichier dans la base de données
+            
+            $application->setScriptPath($newFilename);
+        }
+
+
+
+        $entityManager->persist($application);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_application_index');
+    }
+
+    return $this->render('application/new.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
+
+
+
+#[Route('/applications/{id}/install', name: 'app_application_install')]
+public function install(Application $application): Response
+{
+    $scriptPath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $application->getScriptPath();
+
+    if (!file_exists($scriptPath)) {
+        throw $this->createNotFoundException('Script introuvable.');
+    }
+
+    // Création du .bat temporaire
+    $batPath = $this->getParameter('kernel.project_dir') . '/public/uploads/installer_' . $application->getId() . '.bat';
+    $batContent = "@echo off\n";
+    $batContent .= "powershell -ExecutionPolicy Bypass -File \"" . $scriptPath . "\"\n";
+    $batContent .= "pause\n";
+
+    file_put_contents($batPath, $batContent);
+
+    return $this->file($batPath, 'installer.bat', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+}
 
 }
