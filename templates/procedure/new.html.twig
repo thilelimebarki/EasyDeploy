@@ -1,12 +1,116 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-<h1>Ajouter une procédure</h1>
+{% block title %}
+    Nouvelle Procédure
+{% endblock %}
 
-{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-    {{ form_row(form.nom) }}
-    {{ form_row(form.description) }}
-    {{ form_row(form.document) }}
-    <button class="btn btn-success">💾 Enregistrer</button>
-{{ form_end(form) }}
+{% block stylesheets %}
+    <style>
+        .form-container {
+            max-width: 700px;
+            margin: 70px auto;
+            padding: 30px;
+            background: rgba(240, 240, 240, 0.95);
+            border-radius: 20px;
+        }
+
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #000000ff;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #000000ff;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 1rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-save {
+            background: #1b82d7ff;
+            color: white;
+            border: none;
+        }
+
+        .btn-save:hover {
+            background: #1b67a4ff;
+            transform: scale(1.05);
+        }
+
+        .btn-cancel {
+            background: #9E9E9E;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: scale(1.05);
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="form-container">
+    <h1>Ajouter une procédure</h1>
+
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+        <div class="form-group">
+            {{ form_label(form.nom, 'Nom de la procédure', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.nom, {'attr': {'class': 'form-input'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-input form-textarea'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.document, 'Document associé (PDF, DOCX...)', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.document, {'attr': {'class': 'form-input'}}) }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-save">💾 Enregistrer</button>
+            <a href="{{ path('app_procedure_index') }}" class="btn btn-cancel">↩ Retour</a>
+            <a href="{{ path('dashboard') }}" class="btn btn-cancel">↩↩ Accueil</a>
+        </div>
+    {{ form_end(form) }}
+</div>
 {% endblock %}

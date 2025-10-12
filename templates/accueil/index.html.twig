@@ -3,21 +3,67 @@
 {% block title %}Accueil - EasyDeploy{% endblock %}
 
 {% block body %}
+<style>
 
-<div style="background-color: #f0f0f0; padding: 2rem; text-align: center;">
-    <h1 style="font-style: italic; text-decoration: underline;">Welcome to EasyDeploy</h1>
+
+    .header {
+        background-color: #f0f0f0;
+        padding: 50px;
+        text-align: center;
+    }
+
+    .header h1 {
+        font-size: 4em;
+        font-style: italic;
+        text-decoration: underline;
+        margin: 0;
+    }
+
+    .info-box {
+        font-size: 25px;
+        background-color: #eee;
+        color: black;
+        max-width: 700px;
+        margin: 2rem auto 0 auto;
+        padding: 2rem;
+        border-radius: 20px;
+        font-style: italic;
+    }
+
+    .btn-access {
+        font-size: 25px;
+        display: inline-block;
+        margin-top: 2rem;
+        padding: 1rem 2rem;
+        background-color: white;
+        color: black;
+        font-weight: bold;
+        border-radius: 30px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .btn-access:hover {
+        background-color: #ddd;
+    }
+
+    .container {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+</style>
+
+<div class="header">
+    <h1>Welcome to EasyDeploy</h1>
 </div>
 
-<div style="background-color: #1e1e2f; color: white; padding: 4rem; text-align: center;">
-    <div style="background-color: #eee; color: black; max-width: 600px; margin: auto; padding: 2rem; border-radius: 20px; font-style: italic;">
+<div class="container">
+    <div class="info-box">
         <strong>EasyDeploy</strong> vous permet de déployer rapidement les logiciels essentiels sur les postes utilisateurs.  
         Grâce à une interface claire, en vous proposant deux options : installation automatique ou téléchargement  
         des scripts prêts à l’emploi, facilitant les déploiements tout en respectant les droits d’administrateur.
     </div>
 
-    <a href="/login" style="margin-top: 2rem; display: inline-block; background-color: white; font-weight: bold; padding: 1rem 2rem; border-radius: 30px; text-decoration: none; color: black;">
-        Accéder à EasyDeploy
-    </a>
+    <a href="/login" class="btn-access">Accéder à EasyDeploy</a>
 </div>
 {% endblock %}
-

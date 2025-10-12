@@ -1,3 +1,3 @@
 @echo off
-powershell -ExecutionPolicy Bypass -File "C:\easydeploy/public/uploads/zip-68c0959f1cb09.ps1"
+powershell -ExecutionPolicy Bypass -File "C:\easydeploy/public/uploads/zip-68c6d5032f85b.ps1"
 pause

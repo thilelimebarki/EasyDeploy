@@ -111,22 +111,59 @@ public function selectEdit(EntityManagerInterface $em): Response
     ]);
 }
 
+// #[Route('/procedure/{id}/edit', name: 'app_procedure_edit')]
+// public function edit(Request $request, Procedure $procedure, EntityManagerInterface $em): Response
+// {
+//     $form = $this->createForm(ProcedureType::class, $procedure);
+//     $form->handleRequest($request);
+
+//     if ($form->isSubmitted() && $form->isValid()) {
+//         $em->flush();
+//         return $this->redirectToRoute('app_procedure_select_edit'); // retour à la liste
+//     }
+
+//     return $this->render('procedure/edit.html.twig', [
+//         'form' => $form->createView(),
+//         'procedure' => $procedure
+//     ]);
+// }
+
 #[Route('/procedure/{id}/edit', name: 'app_procedure_edit')]
-public function edit(Request $request, Procedure $procedure, EntityManagerInterface $em): Response
+public function edit(Request $request, Procedure $procedure, EntityManagerInterface $em, SluggerInterface $slugger): Response
 {
     $form = $this->createForm(ProcedureType::class, $procedure);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
+        // Récupérer le fichier uploadé
+        $file = $form->get('document')->getData();
+
+        if ($file) {
+            // Créer un nom unique
+            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+
+            // Déplacer le fichier
+            $file->move(
+                $this->getParameter('documents_directory'),
+                $newFilename
+            );
+
+            // Associer le nouveau nom à l'entité
+            $procedure->setDocument($newFilename);
+        }
+
         $em->flush();
-        return $this->redirectToRoute('app_procedure_select_edit'); // retour à la liste
+        return $this->redirectToRoute('app_procedure_select_edit');
     }
 
     return $this->render('procedure/edit.html.twig', [
         'form' => $form->createView(),
-        'procedure' => $procedure
+        'procedure' => $procedure,
     ]);
 }
+
 
     
 }

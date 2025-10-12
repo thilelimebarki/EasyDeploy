@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use App\Entity\Installation;
 
 
 class ApplicationController extends AbstractController
@@ -190,14 +191,45 @@ public function new(Request $request, EntityManagerInterface $entityManager, Slu
 
 
 
+// #[Route('/applications/{id}/install', name: 'app_application_install')]
+// public function install(Application $application): Response
+// {
+//     $scriptPath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $application->getScriptPath();
+
+//     if (!file_exists($scriptPath)) {
+//         throw $this->createNotFoundException('Script introuvable.');
+//     }
+
+//     // Création du .bat temporaire
+//     $batPath = $this->getParameter('kernel.project_dir') . '/public/uploads/installer_' . $application->getId() . '.bat';
+//     $batContent = "@echo off\n";
+//     $batContent .= "powershell -ExecutionPolicy Bypass -File \"" . $scriptPath . "\"\n";
+//     $batContent .= "pause\n";
+
+//     file_put_contents($batPath, $batContent);
+
+//     return $this->file($batPath, 'installer.bat', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+// }
+
 #[Route('/applications/{id}/install', name: 'app_application_install')]
-public function install(Application $application): Response
+public function install(Application $application, EntityManagerInterface $em): Response
 {
     $scriptPath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $application->getScriptPath();
 
     if (!file_exists($scriptPath)) {
         throw $this->createNotFoundException('Script introuvable.');
     }
+
+    // 🔹 Enregistrement dans l’historique
+    $historique = new Installation();
+    $historique->setDate(new \DateTime());
+    $historique->setTechnicien($this->getUser()->getUserIdentifier()); // email ou login de l’utilisateur
+    $historique->setNomPc(gethostname()); // récupère le nom du poste serveur (pas du client)
+    $historique->setLogiciel($application->getNomApplication());
+    $historique->setStatut("Installateur téléchargé");
+
+    $em->persist($historique);
+    $em->flush();
 
     // Création du .bat temporaire
     $batPath = $this->getParameter('kernel.project_dir') . '/public/uploads/installer_' . $application->getId() . '.bat';

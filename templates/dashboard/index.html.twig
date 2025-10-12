@@ -1,28 +1,142 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-<div style="background:#fffffff2; padding:30px; border-radius:20px; max-width:1000px; margin: 100px auto;">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2>Bienvenue {{ technicien.prenom }} {{ technicien.nom }}</h2>
-        <a href="{{ path('app_logout') }}" style="padding: 5px 10px; background:#ddd; border-radius:5px;">Déconnexion</a>
-    </div>
+{% block title %}Tableau de bord{% endblock %}
 
-    <div style="display:flex; justify-content:space-around; margin-top:30px;">
-        <div style="text-align:center;">
-            <img src="{{ asset('images/application.png') }}" alt="Applications" style="height: 60px;">
-            <h4>Applications disponibles</h4>
-            <a href="{{ path('app_application_index') }}">Afficher la liste</a>
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+        .dashboard-container {
+            background: #fffffff2;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 1000px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .dashboard-title {
+            font-size: 28px;
+            color: #000000ff;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            padding: 10px 20px;
+            background: #3b33a3;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #2c2680;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card-icon {
+            height: 70px;
+            margin-bottom: 15px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            color: #000000ff;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .card-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            color: #3b33a3;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .card-link:hover {
+            background: #e0e0e0;
+            text-decoration: none;
+            color: #2c2680;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-container {
+                margin: 50px 20px;
+                padding: 20px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h2 class="dashboard-title">Bienvenue {{ technicien.prenom }} {{ technicien.nom }}</h2>
+            <a href="{{ path('app_logout') }}" class="logout-btn">Déconnexion</a>
         </div>
-        <div style="text-align:center;">
-            <img src="{{ asset('images/documentation.png') }}" alt="Documentation" style="height: 60px;">
-            <h4>Documentations techniques</h4>
-            <a href="{{ path('app_procedure_index') }}">Accéder aux procédures</a>
-        </div>
-        <div style="text-align:center;">
-            <img src="{{ asset('images/historique.png') }}" alt="historique" style="height: 60px;">
-            <h4>Historique des installations</h4>
-            <a href="#">Afficher l'historique</a>
+        
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <img src="{{ asset('images/application.png') }}" alt="Applications" class="card-icon">
+                <h4 class="card-title">Applications disponibles</h4>
+                <a href="{{ path('app_application_index') }}" class="card-link">Afficher la liste</a>
+            </div>
+            
+            <div class="dashboard-card">
+                <img src="{{ asset('images/documentation.png') }}" alt="Documentation" class="card-icon">
+                <h4 class="card-title">Documentations techniques</h4>
+                <a href="{{ path('app_procedure_index') }}" class="card-link">Accéder aux procédures</a>
+            </div>
+            
+            <div class="dashboard-card">
+                <img src="{{ asset('images/historique.png') }}" alt="Historique" class="card-icon">
+                <h4 class="card-title">Historique des installations</h4>
+                <a href="{{ path('app_historique') }}" class="card-link">Afficher l'historique</a>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

@@ -1,14 +1,89 @@
 {% extends 'base.html.twig' %}
 
-{# templates/registration/register.html.twig #}
-
 {% block body %}
-    <h1>Inscription</h1>
+<style>
+    body {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .registration-container {
+        background-color: #d3d3d3;
+        padding: 40px;
+        border-radius: 20px;
+        width: 400px;
+        display: block;
+		font-weight: bold;
+    }
+
+    .registration-container h1 {
+        text-align: center;
+        font-style: italic;
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .confirm-password {
+        margin-bottom: 20px;
+    }
+
+    .confirm-password input {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 10px;
+        background-color: #2f2fa2;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .submit-btn:hover {
+        background-color: #1f1f8a;
+    }
+</style>
+
+<div class="registration-container">
+    <h1>Inscription:</h1>
     {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.nom) }}
-        {{ form_row(registrationForm.prenom) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.motDePasse) }}
-        <button class="btn btn-primary">Créer un compte</button>
+        <div class="form-group">
+            {{ form_label(registrationForm.nom, 'Nom:') }}
+            {{ form_widget(registrationForm.nom) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(registrationForm.prenom, 'Prénom:') }}
+            {{ form_widget(registrationForm.prenom) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(registrationForm.email, 'Adresse mail:') }}
+            {{ form_widget(registrationForm.email) }}
+        </div>
+        <div class="form-group">
+            {{ form_label(registrationForm.motDePasse, 'Mot de passe:') }}
+            {{ form_widget(registrationForm.motDePasse) }}
+        </div>
+        <div class="confirm-password">
+            <label>Confirmez votre mot de passe:</label>
+            <input type="password" name="confirm_password">
+        </div>
+        <button type="submit" class="submit-btn">S’inscrire</button>
     {{ form_end(registrationForm) }}
+</div>
 {% endblock %}

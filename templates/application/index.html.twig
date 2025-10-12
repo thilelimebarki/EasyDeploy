@@ -2,13 +2,6 @@
 
 {% block stylesheets %}
 	<style>
-		body {
-			background-image: url('/images/bg-circuit.jpg');
-			background-size: cover;
-			background-repeat: no-repeat;
-			font-family: Arial, sans-serif;
-		}
-
 		.app-container {
 			background-color: rgba(255, 255, 255, 0.95);
 			max-width: 1000px;
@@ -25,6 +18,7 @@
 		}
 
 		p {
+			font-size: 1.1rem;
 			text-align: center;
 			margin-bottom: 30px;
 		}
@@ -36,6 +30,7 @@
 
 		th,
 		td {
+			font-size: 1.01rem;
 			padding: 15px;
 			text-align: center;
 		}
@@ -49,6 +44,7 @@
 		}
 
 		.btn {
+			font-size: 1.1rem;
 			padding: 8px 12px;
 			border: none;
 			border-radius: 5px;
@@ -63,8 +59,18 @@
 			background-color: #2196F3;
 		}
 
+		.btn-install:hover {
+			background-color: #1b67a4ff;
+			transform: scale(1.05);
+		}
+
 		.btn-download {
-			background-color: #9E9E9E;
+			background-color: #aeaeaeff;
+		}
+
+		.btn-download:hover {
+			background-color: #979595ff;
+			transform: scale(1.05);
 		}
 
 		.btn-success,
@@ -73,6 +79,13 @@
 			color: #000000;
 			border-bottom: 2px solid #ccc;
 			font-weight: bold;
+		}
+
+		.btn-success:hover,
+		.btn-warning:hover,
+		.btn-danger:hover {
+			background-color: #c6c6c6ff;
+			transform: scale(1.05);
 		}
 	</style>
 {% endblock %}

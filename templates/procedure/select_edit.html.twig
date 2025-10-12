@@ -2,12 +2,6 @@
 
 {% block stylesheets %}
 	<style>
-		body {
-			background-image: url('/images/bg-circuit.jpg');
-			background-size: cover;
-			background-repeat: no-repeat;
-			font-family: Arial, sans-serif;
-		}
 
 		.app-container {
 			background-color: rgba(255, 255, 255, 0.95);
@@ -25,6 +19,7 @@
 		}
 
 		p {
+			font-size: 1.1rem;
 			text-align: center;
 			margin-bottom: 30px;
 		}
@@ -36,6 +31,7 @@
 
 		th,
 		td {
+			font-size: 1.1rem;
 			padding: 15px;
 			text-align: center;
 		}
@@ -46,6 +42,34 @@
 
 		td {
 			border-bottom: 1px solid #eee;
+		}
+
+		.btn-cancel {
+			background: #9E9E9E;
+			color: black;
+			display: inline-block;
+			padding: 10px 18px;
+			border-radius: 6px;
+			font-size: 1.1rem;
+			text-decoration: none;
+			transition: background 0.3s, transform 0.2s;
+		}
+
+		.btn-edit {
+			background-color: #9E9E9E;
+			padding: 8px 12px;
+			border: none;
+			border-radius: 5px;
+			text-decoration: none;
+			color: white;
+			cursor: pointer;
+			margin: 5px;
+			display: inline-block;
+		}
+
+		.btn:hover {
+			background: #5a6268;
+			transform: scale(1.05);
 		}
 	</style>
 {% endblock %}
@@ -83,7 +107,7 @@
 							{{ procedure.description }}
 						</td>
 						<td>
-							<a href="{{ path('app_procedure_edit', { id: procedure.id }) }}" class="btn btn-warning">
+							<a href="{{ path('app_procedure_edit', { id: procedure.id }) }}" class="btn btn-edit">
 								Modifier
 							</a>
 						</td>
@@ -92,8 +116,11 @@
 			</tbody>
 		</table>
 
-		<a href="{{ path('app_procedure_index') }}" class="btn btn-secondary">
+		<a href="{{ path('app_procedure_index') }}" class="btn btn-cancel">
 			↩ Retour
+		</a>
+		<a href="{{ path('dashboard') }}" class="btn btn-cancel">
+			↩↩ Accueil
 		</a>
 	</div>
 {% endblock %}
