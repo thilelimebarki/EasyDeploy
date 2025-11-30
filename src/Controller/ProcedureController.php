@@ -111,22 +111,6 @@ public function selectEdit(EntityManagerInterface $em): Response
     ]);
 }
 
-// #[Route('/procedure/{id}/edit', name: 'app_procedure_edit')]
-// public function edit(Request $request, Procedure $procedure, EntityManagerInterface $em): Response
-// {
-//     $form = $this->createForm(ProcedureType::class, $procedure);
-//     $form->handleRequest($request);
-
-//     if ($form->isSubmitted() && $form->isValid()) {
-//         $em->flush();
-//         return $this->redirectToRoute('app_procedure_select_edit'); // retour à la liste
-//     }
-
-//     return $this->render('procedure/edit.html.twig', [
-//         'form' => $form->createView(),
-//         'procedure' => $procedure
-//     ]);
-// }
 
 #[Route('/procedure/{id}/edit', name: 'app_procedure_edit')]
 public function edit(Request $request, Procedure $procedure, EntityManagerInterface $em, SluggerInterface $slugger): Response

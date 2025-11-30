@@ -18,14 +18,14 @@ class RegistrationController extends AbstractController
     public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
     {
         $technicien = new Technicien();
-        $form = $this->createForm(RegistrationFormType::class, $technicien);
-        $form->handleRequest($request);
+        $form = $this->createForm(RegistrationFormType::class, $technicien); // Création du formulaire d'inscription basé sur l'entité Technicien
+        $form->handleRequest($request); // Analyse les données reçues dans la requête HTTP (POST)
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $plainPassword = $form->get('motDePasse')->getData();
-            $hashedPassword = $hasher->hashPassword($technicien, $plainPassword);
-            $technicien->setMotDePasse($hashedPassword);
-            $em->persist($technicien);
+            $plainPassword = $form->get('motDePasse')->getData(); // Récupère le mot de passe en clair envoyé par l'utilisateur
+            $hashedPassword = $hasher->hashPassword($technicien, $plainPassword); // Hash le mot de passe (sécurisation)
+            $technicien->setMotDePasse($hashedPassword); // Enregistre le mot de passe hashé dans l’entité
+            $em->persist($technicien); // Prépare l’entité à être stockée en base
             $em->flush();
 
             return $this->redirectToRoute('app_login');

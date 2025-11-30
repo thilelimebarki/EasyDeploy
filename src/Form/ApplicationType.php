@@ -25,15 +25,17 @@ class ApplicationType extends AbstractType
 
             ->add('scriptFile', FileType::class, [
                 'label' => 'Script PowerShell (.ps1)',
+                
                 'mapped' => false,   // important ! On ne mappe pas directement à l’entité
                 'required' => true,
                 'constraints' => [
                     new File([
-                        'maxSize' => '5M',
+                        'maxSize' => '50M',
                         'mimeTypes' => [
                             'text/plain',
                             'application/octet-stream',
                             'application/x-powershell',
+                            
                         ],
                         'mimeTypesMessage' => 'Veuillez uploader un fichier PowerShell valide (.ps1)',
                     ])
