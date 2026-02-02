@@ -8,8 +8,8 @@
 			margin: 60px auto;
 			padding: 30px;
 			border-radius: 20px;
-            justify-content: center;
-            align-items: center;
+			justify-content: center;
+			align-items: center;
 		}
 
 		h1 {
@@ -65,6 +65,12 @@
 			background-color: #1b67a4ff;
 			transform: scale(1.05);
 		}
+
+		.table-container {
+			max-height: 400px; /* hauteur visible */
+			overflow-y: auto; /* barre de défilement verticale */
+			border-radius: 10px;
+		}
 	</style>
 {% endblock %}
 
@@ -77,60 +83,62 @@
 			Consultez l’historique des applications installées sur les machines.
 		</p>
 
-		<table>
-			<thead>
-				<tr>
-					<th>
-						Application
-					</th>
-					<th>
-						Machine
-					</th>
-					<th>
-						Date d’installation
-					</th>
-					<th>
-						Utilisateur
-					</th>
-                    <th>
-                    Statut
-                    </th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for h in historique %}
+		<div class="table-container">
+			<table>
+				<thead>
 					<tr>
-						<td>
-							{{ h.date|date('d/m/Y H:i') }}
-						</td>
-						<td>
-							{{ h.technicien }}
-						</td>
-						<td>
-							{{ h.nomPc }}
-						</td>
-						<td>
-							{{ h.logiciel }}
-						</td>
-						<td>
-							{{ h.statut }}
-						</td>
+						<th>
+							Date d’installation
+						</th>
+						<th>
+							Technicien
+						</th>
+						<th>
+							Application
+						</th>
+						<th>
+							Machine
+						</th>
+						<th>
+							Statut
+						</th>
 					</tr>
-				{% else %}
-					<tr>
-						<td colspan="4">
-							Aucun historique disponible.
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{% for h in historique %}
+						<tr>
+							<td>
+								{{ h.date|date('d/m/Y H:i') }}
+							</td>
+							<td>
+								{{ h.technicien }}
+							</td>
+							<td>
+								{{ h.logiciel }}
+							</td>
+							<td>
+								{{ h.nomPc }}
+							</td>
+							<td>
+								{{ h.statut }}
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="4">
+								Aucun historique disponible.
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 
 		<a href="{{ path('app_application_index') }}" class="btn btn-back">
 			↩ Retour aux applications
 		</a>
-        <a href="{{ path('dashboard') }}" class="btn btn-back">
-			↩↩ Accueil
+		<a href="{{ path('dashboard') }}" class="btn btn-back">
+			Accueil
 		</a>
 	</div>
 {% endblock %}

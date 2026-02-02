@@ -80,6 +80,23 @@
 			transform: scale(1.05);
 		}
 
+		.btn-cancel {
+			background: #9E9E9E;
+			color: white;
+			text-decoration: none;
+			display: inline-block;
+		}
+
+		.btn-cancel:hover {
+			background: #5a6268;
+			transform: scale(1.05);
+		}
+
+		.table-container {
+			max-height: 400px; /* hauteur visible */
+			overflow-y: auto; /* barre de défilement verticale */
+			border-radius: 10px;
+		}
 	</style>
 {% endblock %}
 
@@ -92,41 +109,43 @@
 			Choisissez une application à installer. Vous pouvez lancer le script automatiquement ou bien le télécharger afin de l’exécuter manuellement.
 		</p>
 
-		<table>
-			<thead>
-				<tr>
-					<th>
-						Procédure
-					</th>
-					<th>
-						Descriptions
-					</th>
-					<th>
-						Actions
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for procedure in procedures %}
+		<div class="table-container">
+			<table>
+				<thead>
 					<tr>
-						<td>
-							{{ procedure.nom }}
-						</td>
-						<td>
-							{{ procedure.description }}
-						</td>
-						<td>
-							{%  if procedure.document %}
-								<a href="{{ path('app_procedure_download', { filename: procedure.document }) }}" class="btn btn-download" download>
-									📂 Télécharger
-								</a>
-							{% endif %}
-						</td>
+						<th>
+							Procédure
+						</th>
+						<th>
+							Descriptions
+						</th>
+						<th>
+							Actions
+						</th>
 					</tr>
-				{% endfor %}
+				</thead>
+				<tbody>
+					{% for procedure in procedures %}
+						<tr>
+							<td>
+								{{ procedure.nom }}
+							</td>
+							<td>
+								{{ procedure.description }}
+							</td>
+							<td>
+								{%  if procedure.document %}
+									<a href="{{ path('app_procedure_download', { filename: procedure.document }) }}" class="btn btn-download" download>
+										📂 Télécharger
+									</a>
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
 
-			</tbody>
-		</table>
+				</tbody>
+			</table>
+		</div>
 		<a href="{{ path('app_procedure_new') }}" class="btn btn-success">
 			➕ Ajouter une procédure
 		</a>
@@ -135,6 +154,9 @@
 		</a>
 		<a href="{{ path('app_procedure_select_delete') }}" class="btn btn-danger">
 			🗑️ Supprimer une procédure
+		</a>
+		<a href="{{ path('dashboard') }}" class="btn btn-cancel">
+			Accueil
 		</a>
 
 	</div>

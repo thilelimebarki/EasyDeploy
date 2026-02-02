@@ -87,6 +87,24 @@
 			background-color: #c6c6c6ff;
 			transform: scale(1.05);
 		}
+
+		.btn-cancel {
+			background: #9E9E9E;
+			color: white;
+			text-decoration: none;
+			display: inline-block;
+		}
+
+		.btn-cancel:hover {
+			background: #5a6268;
+			transform: scale(1.05);
+		}
+
+		.table-container {
+			max-height: 400px; /* hauteur visible */
+			overflow-y: auto; /* barre de défilement verticale */
+			border-radius: 10px;
+		}
 	</style>
 {% endblock %}
 
@@ -99,58 +117,59 @@
 			Choisissez une application à installer. Vous pouvez lancer le script automatiquement ou bien le télécharger afin de l’exécuter manuellement.
 		</p>
 
-		<table>
-			<thead>
-				<tr>
-					<th>
-						Applications
-					</th>
-					<th>
-						Descriptions
-					</th>
-					<th>
-						Actions
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for application in applications %}
+		<div class="table-container">
+			<table>
+				<thead>
 					<tr>
-						<td>
-							{{ application.nomApplication }}
-						</td>
-						<td>
-							{{ application.description }}
-						</td>
-						<td>
-
-							{% if application.scriptPath %}
-								<!-- Bouton Télécharger -->
-								<a href="{{ path('app_script_download', { filename: application.scriptPath }) }}" class="btn btn-download">
-									Télécharger le script
-								</a>
-
-								<!-- Bouton Installer -->
-								{# <a href="{{ path('app_application_install', { id: application.id }) }}" class="btn btn-install">
-																	Installer
-																</a> #}
-								{# <a href="{{ asset('uploads/' ~ application.scriptPath) }}" class="btn btn-install">
-									Installer
-								</a> #}
-								<a href="{{ path('app_application_install', { id: application.id }) }}" class="btn btn-install">
-									Installer
-								</a>
-							{% else %}
-								<span>
-									Aucun script disponible
-								</span>
-							{% endif %}
-
-						</td>
+						<th>
+							Applications
+						</th>
+						<th>
+							Descriptions
+						</th>
+						<th>
+							Actions
+						</th>
 					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{% for application in applications %}
+						<tr>
+							<td>
+								{{ application.nomApplication }}
+							</td>
+							<td>
+								{{ application.description }}
+							</td>
+							<td>
+
+								{% if application.scriptPath %}
+									<!-- Bouton Télécharger -->
+									<a href="{{ path('app_script_download', { filename: application.scriptPath }) }}" class="btn btn-download">
+										Télécharger le script
+									</a>
+
+									<!-- Bouton Installer -->
+									{# <a href="{{ path('app_application_install', { id: application.id }) }}" class="btn btn-install">
+																										Installer
+																									</a> #}
+									{# <a href="{{ asset('uploads/' ~ application.scriptPath) }}" class="btn btn-install">
+																		Installer
+																	</a> #}
+										<a href="{{ path('app_application_install', { id: application.id }) }}" class="btn btn-install"> Installer
+									</a>
+								{% else %}
+									<span>
+										Aucun script disponible
+									</span>
+								{% endif %}
+
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 		<a href="{{ path('app_application_new') }}" class="btn btn-success">
 			➕ Ajouter une application
 		</a>
@@ -159,6 +178,9 @@
 		</a>
 		<a href="{{ path('app_application_select_delete') }}" class="btn btn-danger">
 			🗑️ Supprimer une application
+		</a>
+		<a href="{{ path('dashboard') }}" class="btn btn-cancel">
+			Accueil
 		</a>
 
 

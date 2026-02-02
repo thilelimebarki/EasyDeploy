@@ -10,7 +10,7 @@
 			margin: 60px auto;
 			padding: 30px;
 			border-radius: 20px;
-			
+
 		}
 
 		h1 {
@@ -45,7 +45,7 @@
 		td {
 			border-bottom: 1px solid #eee;
 		}
-			.btn-cancel {
+		.btn-cancel {
 			background: #9E9E9E;
 			color: black;
 			display: inline-block;
@@ -72,6 +72,11 @@
 			margin: 5px;
 			display: inline-block;
 		}
+		.table-container {
+			max-height: 400px; /* hauteur visible */
+			overflow-y: auto; /* barre de défilement verticale */
+			border-radius: 10px;
+		}
 	</style>
 {% endblock %}
 
@@ -84,44 +89,46 @@
 			Sélectionnez une application pour la modifier.
 		</p>
 
-		<table>
-			<thead>
-				<tr>
-					<th>
-						Applications
-					</th>
-					<th>
-						Descriptions
-					</th>
-					<th>
-						Action
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for application in applications %}
+		<div class="table-container">
+			<table>
+				<thead>
 					<tr>
-						<td>
-							{{ application.nomApplication }}
-						</td>
-						<td>
-							{{ application.description }}
-						</td>
-						<td>
-							<a href="{{ path('app_application_edit', { id: application.id }) }}" class="btn btn-edit">
-								Modifier
-							</a>
-						</td>
+						<th>
+							Applications
+						</th>
+						<th>
+							Descriptions
+						</th>
+						<th>
+							Action
+						</th>
 					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{% for application in applications %}
+						<tr>
+							<td>
+								{{ application.nomApplication }}
+							</td>
+							<td>
+								{{ application.description }}
+							</td>
+							<td>
+								<a href="{{ path('app_application_edit', { id: application.id }) }}" class="btn btn-edit">
+									Modifier
+								</a>
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
 
 		<a href="{{ path('app_application_index') }}" class="btn btn-cancel">
 			↩ Retour
 		</a>
 		<a href="{{ path('dashboard') }}" class="btn btn-cancel">
-			↩↩ Accueil
+			Accueil
 		</a>
 	</div>
 {% endblock %}

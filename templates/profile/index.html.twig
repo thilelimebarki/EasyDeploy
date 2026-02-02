@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Mon profil
+{% endblock %}
+
+{% block stylesheets %}
+	<style>
+		.form-container {
+			max-width: 700px;
+			margin: 70px auto;
+			padding: 30px;
+			background: rgba(240, 240, 240, 0.95);
+			border-radius: 20px;
+		}
+
+		h1 {
+			text-align: center;
+			margin-bottom: 25px;
+		}
+
+		.form-group {
+			margin-bottom: 20px;
+		}
+
+		.form-label {
+			display: block;
+			font-weight: bold;
+			margin-bottom: 8px;
+		}
+
+		.form-input {
+			width: 100%;
+			padding: 10px;
+			border: 1px solid #bbb;
+			border-radius: 6px;
+		}
+
+		.form-actions {
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.btn-save {
+			background: #1b82d7;
+			color: white;
+			padding: 10px 18px;
+			border: none;
+			border-radius: 6px;
+		}
+
+		.btn-cancel {
+			background: #9e9e9e;
+			color: white;
+			padding: 10px 18px;
+			border-radius: 6px;
+			text-decoration: none;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="form-container">
+		<h1>
+			👤 Mon profil
+		</h1>
+
+		{{ form_start(form) }}
+
+		<div class="form-group">
+			{{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}
+			) }}
+			{{ form_widget(form.nom, {'attr': {'class': 'form-input'}}
+			) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.prenom, null, {'label_attr': {'class': 'form-label'}}
+			) }}
+			{{ form_widget(form.prenom, {'attr': {'class': 'form-input'}}
+			) }}
+		</div>
+
+		<div class="form-group">
+			{{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}
+			) }}
+			{{ form_widget(form.email, {'attr': {'class': 'form-input'}}
+			) }}
+		</div>
+
+        <div class="form-group">
+			{{ form_label(form.plainPassword, 'Nouveau mot de passe', {'label_attr': {'class': 'form-label'}}
+			) }}
+			{{ form_widget(form.plainPassword, {'attr': {'class': 'form-input'}}
+			) }}
+			<small style="color:#666">
+				Laissez vide si vous ne souhaitez pas changer le mot de passe
+			</small>
+		</div>
+
+		<div class="form-actions">
+			<button class="btn-save">
+				💾 Enregistrer
+			</button>
+			<a href="{{ path('dashboard') }}" class="btn-cancel">
+				↩ Retour
+			</a>
+		</div>
+
+
+		{{ form_end(form) }}
+	</div>
+{% endblock %}
