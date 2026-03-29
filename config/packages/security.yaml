@@ -25,6 +25,7 @@ security:
 
     # Contrôle d'accès aux pages
     access_control:
+        - { path: ^/verify-email, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/$, roles: PUBLIC_ACCESS }

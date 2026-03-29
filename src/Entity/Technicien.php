@@ -107,4 +107,32 @@ class Technicien implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // Rien à effacer pour l'instant
     }
+
+    #[ORM\Column(type: 'boolean')]
+private bool $isVerified = true; // ✅ important : par défaut TRUE pour ne pas bloquer les anciens
+
+#[ORM\Column(length: 64, nullable: true)]
+private ?string $verificationToken = null;
+
+public function isVerified(): bool
+{
+    return $this->isVerified;
+}
+
+public function setIsVerified(bool $isVerified): self
+{
+    $this->isVerified = $isVerified;
+    return $this;
+}
+
+public function getVerificationToken(): ?string
+{
+    return $this->verificationToken;
+}
+
+public function setVerificationToken(?string $verificationToken): self
+{
+    $this->verificationToken = $verificationToken;
+    return $this;
+}
 }

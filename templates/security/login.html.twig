@@ -75,6 +75,33 @@
     .login-box .register-link a:hover {
         text-decoration: underline;
     }
+
+    .flash {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.flash-success {
+    background-color: #e6ffed;
+    color: #0a1e0a;
+    border: 1px solid #a3cfbb;
+}
+
+.flash-error {
+    background-color: #ffe6e6;
+    color: #b30000;
+    border: 1px solid #ff9999;
+}
+
+.flash-warning {
+    background-color: #fff3cd;
+    color: #664d03;
+    border: 1px solid #ffecb5;
+}
+
 </style>
 
 <div class="login-container">
@@ -84,6 +111,14 @@
                 {{ error.messageKey|trans(error.messageData, 'security') }}
             </div>
         {% endif %}
+
+        {% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="flash flash-{{ label }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
 
         <h1>Connexion</h1>
 

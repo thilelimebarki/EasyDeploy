@@ -14,6 +14,8 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use App\Repository\TechnicienRepository;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -21,23 +23,53 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
-    {
-    }
+    // public function __construct(private UrlGeneratorInterface $urlGenerator)
+    // {
+    // }
+    public function __construct(
+    private UrlGeneratorInterface $urlGenerator,
+    private TechnicienRepository $technicienRepository
+) {}
 
+    // public function authenticate(Request $request): Passport
+    // {
+    //     $email = $request->request->get('email', '');
+
+    //     $request->getSession()->set(Security::LAST_USERNAME, $email);
+
+    //     return new Passport(
+    //         new UserBadge($email),
+    //         new PasswordCredentials($request->request->get('password', '')),
+    //         [
+    //             new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),            ]
+    //     );
+    // }
     public function authenticate(Request $request): Passport
-    {
-        $email = $request->request->get('email', '');
+{
+    $email = $request->request->get('email', '');
+    $request->getSession()->set(Security::LAST_USERNAME, $email);
 
-        $request->getSession()->set(Security::LAST_USERNAME, $email);
+    return new Passport(
+        new UserBadge($email, function (string $userIdentifier) {
+            $user = $this->technicienRepository->findOneBy(['email' => $userIdentifier]);
 
-        return new Passport(
-            new UserBadge($email),
-            new PasswordCredentials($request->request->get('password', '')),
-            [
-                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),            ]
-        );
-    }
+            if (!$user) {
+                throw new CustomUserMessageAuthenticationException('Email introuvable.');
+            }
+
+            // ✅ Ici on bloque uniquement si non validé
+            if (!$user->isVerified()) {
+                throw new CustomUserMessageAuthenticationException(
+                    'Votre compte n\'est pas encore validé. Vérifiez vos emails (spam).'
+                );
+            }
+
+            return $user;
+        }),
+        new PasswordCredentials($request->request->get('password', '')),
+        [new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token'))]
+    );
+}
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
 {
