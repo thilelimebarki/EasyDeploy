@@ -7,15 +7,15 @@ use App\Form\ApplicationType;
 use App\Repository\ApplicationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\Request; // Contient les données envoyées
+use Symfony\Component\HttpFoundation\Response; // Réponse HTTP
+use Symfony\Component\HttpFoundation\ResponseHeaderBag; // Gestion du téléchargement de fichiers
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use App\Entity\Installation;
+use Symfony\Component\HttpFoundation\File\Exception\FileException; // Gestion des erreurs d’upload
+use Symfony\Component\HttpFoundation\File\UploadedFile; // Représente un fichier uploadé
+use Symfony\Component\String\Slugger\SluggerInterface;// Sert à sécuriser les noms de fichiers
+use Symfony\Component\HttpFoundation\BinaryFileResponse; // Réponse pour télécharger un fichier
+use App\Entity\Installation; 
 
 
 class ApplicationController extends AbstractController
@@ -63,7 +63,10 @@ public function selectEdit(EntityManagerInterface $em): Response
 public function edit(Request $request, Application $application, EntityManagerInterface $em, SluggerInterface $slugger): Response
 {
     // Crée le formulaire à partir de l'entité Application
-    $form = $this->createForm(ApplicationType::class, $application);
+    // $form = $this->createForm(ApplicationType::class, $application);
+    $form = $this->createForm(ApplicationType::class, $application, [
+    'is_edit' => true
+]);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
@@ -104,6 +107,7 @@ public function edit(Request $request, Application $application, EntityManagerIn
     ]);
 }
 
+// Route pour afficher le tableau de sélection pour suppression
 #[Route('/applications/select-delete', name: 'app_application_select_delete')]
 public function selectDelete(EntityManagerInterface $em): Response
 {
@@ -115,6 +119,7 @@ public function selectDelete(EntityManagerInterface $em): Response
     ]);
 }
 
+// Route pour supprimer une application précise
 #[Route('/applications/{id}', name: 'app_application_delete', methods: ['POST'])]
 public function delete(Request $request, Application $application, EntityManagerInterface $em): Response
 {
@@ -131,12 +136,14 @@ public function delete(Request $request, Application $application, EntityManager
 #[Route('/script/{filename}', name: 'app_script_download')]
 public function download(string $filename): BinaryFileResponse
 {
+    // Chemin du fichier
     $filePath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $filename;
 
     if (!file_exists($filePath)) {
         throw $this->createNotFoundException('Le fichier demandé est introuvable.');
     }
 
+    // Force le téléchargement
     $response = $this->file($filePath, $filename, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
     
     // Définir le Content-Type pour PowerShell
@@ -145,7 +152,7 @@ public function download(string $filename): BinaryFileResponse
     return $response;
 }
 
-
+// Route pour ajouter une application 
 #[Route('/new', name: 'app_application_new')]
 public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
 {
@@ -155,6 +162,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, Slu
 
     if ($form->isSubmitted() && $form->isValid()) {
         // Gérer l'upload du fichier de script
+        // Récupèrer le fichier
         $file = $form->get('scriptFile')->getData();
         if ($file) {
             $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -185,7 +193,7 @@ public function new(Request $request, EntityManagerInterface $entityManager, Slu
     ]);
 }
 
-
+//Route pour installer une application
 #[Route('/install/{id}', name: 'app_application_install')]
 public function install(Application $application, EntityManagerInterface $em): Response
 {
@@ -216,7 +224,7 @@ public function install(Application $application, EntityManagerInterface $em): R
 powershell -ExecutionPolicy Bypass -File "' . $scriptUrl . '"
 pause';
 
-    // Génération dynamique du Nom et chemin complet du fichier temporaire  .bat
+    // Génération dynamique du Nom et chemin complet du fichier .bat
     $batFilename = 'installer_' . uniqid() . '.bat';
     $batPath = $this->getParameter('kernel.project_dir') . '/public/temp/' . $batFilename;
 

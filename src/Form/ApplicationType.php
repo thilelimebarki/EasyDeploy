@@ -27,7 +27,8 @@ class ApplicationType extends AbstractType
                 'label' => 'Script PowerShell (.ps1)',
                 
                 'mapped' => false,   // important ! On ne mappe pas directement à l’entité
-                'required' => true,
+                // 'required' => true,
+                'required' => $options['is_edit'] ? false : true,
                 'constraints' => [
                     new File([
                         'maxSize' => '50M',
@@ -48,6 +49,7 @@ class ApplicationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Application::class,
+            'is_edit' => false,
         ]);
     }
 }

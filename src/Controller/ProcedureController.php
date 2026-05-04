@@ -25,6 +25,7 @@ class ProcedureController extends AbstractController
         ]);
     }
 
+// Route pour ajouter une procédure
 #[Route('/procedure/new', name: 'app_procedure_new')]
     public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
@@ -60,6 +61,7 @@ class ProcedureController extends AbstractController
         ]);
     }
 
+    // Route pour afficher une procédure
     #[Route('/{id}', name: 'app_procedure_show', methods: ['GET'])]
     public function show(Procedure $procedure): Response
     {
@@ -68,6 +70,7 @@ class ProcedureController extends AbstractController
         ]);
     }
 
+    // Route pour supprimer une procédure
     #[Route('/{id}', name: 'app_procedure_delete', methods: ['POST'])]
     public function delete(Request $request, Procedure $procedure, EntityManagerInterface $entityManager): Response
     {
@@ -78,7 +81,7 @@ class ProcedureController extends AbstractController
 
         return $this->redirectToRoute('app_procedure_index', [], Response::HTTP_SEE_OTHER);
     }
-
+    // Route pour sélectionner une procédure à supprimer
     #[Route('/procedure/select-delete', name: 'app_procedure_select_delete')]
 public function selectDelete(EntityManagerInterface $em): Response
 {
@@ -88,7 +91,7 @@ public function selectDelete(EntityManagerInterface $em): Response
         'procedures' => $procedures,
     ]);
 }
-
+// Route pour téléchérger la procédure
 #[Route('/procedure/download/{filename}', name: 'app_procedure_download')]
 public function download(string $filename): BinaryFileResponse
 {
@@ -101,6 +104,7 @@ public function download(string $filename): BinaryFileResponse
     return $this->file($filePath, $filename, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
 }
 
+// Route pour sélectionner une procédure à modifier
 #[Route('/procedure/select-edit', name: 'app_procedure_select_edit')]
 public function selectEdit(EntityManagerInterface $em): Response
 {
@@ -148,6 +152,4 @@ public function edit(Request $request, Procedure $procedure, EntityManagerInterf
     ]);
 }
 
-
-    
 }

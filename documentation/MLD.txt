@@ -1,0 +1,13 @@
+Technicien(id, nom, prenom, email, mot_de_passe, is-verified, verification_token)
+    PK : id
+
+Documentation(id, nom, description, document)
+    PK : id
+
+Application(id, nom_application, script, description)
+    PK : id
+
+Installation(id, date, nom_pc, statut, technicien, application)
+    PK : id
+    FK : technicien => technicien.nom
+    FK : application => Application.nom_application

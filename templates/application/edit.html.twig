@@ -104,6 +104,9 @@
         <div class="form-group">
             {{ form_label(form.scriptFile, 'Script PowerShell (.ps1)', {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.scriptFile, {'attr': {'class': 'form-input'}}) }}
+            {% if application.scriptPath %}
+                <small style="color:#666">⚠️ Laisser vide pour conserver le script actuel</small>
+            {% endif %}
         </div>
 
         <div class="form-actions">
