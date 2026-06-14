@@ -30,8 +30,6 @@ class ApplicationController extends AbstractController
         ]);
     }
 
-
-
 #[Route('/scripts/{filename}', name: 'app_script_download')]
 public function downloadScript(string $filename): Response
 {
@@ -63,7 +61,6 @@ public function selectEdit(EntityManagerInterface $em): Response
 public function edit(Request $request, Application $application, EntityManagerInterface $em, SluggerInterface $slugger): Response
 {
     // Crée le formulaire à partir de l'entité Application
-    // $form = $this->createForm(ApplicationType::class, $application);
     $form = $this->createForm(ApplicationType::class, $application, [
     'is_edit' => true
 ]);
