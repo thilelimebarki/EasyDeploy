@@ -30,20 +30,6 @@ class ApplicationController extends AbstractController
         ]);
     }
 
-#[Route('/scripts/{filename}', name: 'app_script_download')]
-public function downloadScript(string $filename): Response
-{
-    // Définit le chemin complet du fichier à partir du nom fourni
-    $scriptPath = $this->getParameter('kernel.project_dir') . '/public/uploads/scripts/' . $filename;
-
-    // Vérifie si le fichier existe
-    if (!file_exists($scriptPath)) {
-        throw $this->createNotFoundException('Le script demandé est introuvable.');
-    }
-
-    return $this->file($scriptPath);
-}
-
     // Route pour afficher le tableau de sélection
 #[Route('/applications/select-edit', name: 'app_application_select_edit')]
 public function selectEdit(EntityManagerInterface $em): Response
@@ -204,38 +190,45 @@ public function install(Application $application, EntityManagerInterface $em): R
     $historique = new Installation();
     $historique->setDate(new \DateTime());
     $historique->setTechnicien($this->getUser()->getUserIdentifier()); // email ou login de l’utilisateur
-    $historique->setNomPc(gethostname()); // récupère le nom du poste serveur (pas du client)
+    $historique->setNomPc(gethostname()); // récupère le nom du poste 
     $historique->setLogiciel($application->getNomApplication());
-    $historique->setStatut("Installateur téléchargé");
 
-    $em->persist($historique);
-    $em->flush();
+    try {
+        // Chemin complet vers le script PowerShell
+        $scriptUrl = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $script;
 
-    // Chemin complet vers le script PowerShell
-    $scriptUrl = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $script;
-
-    // Contenu du .bat qui exécute le .ps1
-    $batContent = '@echo off
+        // Contenu du .bat qui exécute le .ps1
+        $batContent = '@echo off
     chcp 65001 >nul
 
 powershell -ExecutionPolicy Bypass -File "' . $scriptUrl . '"
 pause';
 
-    // Génération dynamique du Nom et chemin complet du fichier .bat
-    $batFilename = 'installer_' . uniqid() . '.bat';
-    $batPath = $this->getParameter('kernel.project_dir') . '/public/temp/' . $batFilename;
+        // Génération dynamique du Nom et chemin complet du fichier .bat
+        $batFilename = 'installer_' . uniqid() . '.bat';
+        $batPath = $this->getParameter('kernel.project_dir') . '/public/temp/' . $batFilename;
 
-    // Créer le dossier temp si pas encore existant
-    if (!file_exists(dirname($batPath))) {
-        mkdir(dirname($batPath), 0777, true);
+        // Créer le dossier temp si pas encore existant
+        if (!file_exists(dirname($batPath))) {
+            mkdir(dirname($batPath), 0777, true);
+        }
+
+        // Enregistre le contenu dans le fichier .bat
+        file_put_contents($batPath, $batContent);
+
+        // Si tout va bien, mettre à jour le statut à "Installateur téléchargé"
+        $historique->setStatut("Installateur téléchargé");
+        $em->persist($historique);
+        $em->flush();
+
+        // Retourner le .bat à l'utilisateur pour téléchargement/exécution
+        return $this->file($batPath, $batFilename, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+    } catch (\Exception $e) {
+        // En cas d'erreur, mettre le statut à "Téléchargement échoué"
+        $historique->setStatut("Téléchargement échoué");
+        $em->persist($historique);
+        $em->flush();
+        throw $e;
     }
-
-    // Enregistre le contenu dans le fichier .bat
-    file_put_contents($batPath, $batContent);
-
-    // Retourner le .bat à l'utilisateur pour téléchargement/exécution
-    return $this->file($batPath, $batFilename, ResponseHeaderBag::DISPOSITION_ATTACHMENT);
 }
-
-
 }
